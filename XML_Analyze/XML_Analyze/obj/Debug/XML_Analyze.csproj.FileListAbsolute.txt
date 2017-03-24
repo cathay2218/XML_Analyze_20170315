@@ -10,3 +10,5 @@ C:\Users\USER\Documents\Visual Studio 2015\Projects\Github_Repository\XML_Analyz
 C:\Users\USER\Documents\Visual Studio 2015\Projects\Github_Repository\XML_Analyze_20170315\XML_Analyze\XML_Analyze\bin\Debug\XML_Analyze.exe
 C:\Users\USER\Documents\Visual Studio 2015\Projects\Github_Repository\XML_Analyze_20170315\XML_Analyze\XML_Analyze\bin\Debug\XML_Analyze.pdb
 C:\Users\USER\Documents\Visual Studio 2015\Projects\Github_Repository\XML_Analyze_20170315\XML_Analyze\XML_Analyze\obj\Debug\XML_Analyze.csprojResolveAssemblyReference.cache
+C:\Users\USER\Documents\Visual Studio 2015\Projects\Github_Repository\XML_Analyze_20170315\XML_Analyze\XML_Analyze\bin\Debug\App_Data\Analyze_DataBase.ldf
+C:\Users\USER\Documents\Visual Studio 2015\Projects\Github_Repository\XML_Analyze_20170315\XML_Analyze\XML_Analyze\bin\Debug\App_Data\Analyze_DataBase.mdf

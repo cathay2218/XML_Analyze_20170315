@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using System.Data.SqlClient;
 
 namespace XML_Analyze
 {
@@ -67,6 +68,21 @@ namespace XML_Analyze
                 Console.WriteLine("{0,-5}{1,-5}{2,-7}{3}", temp._Parser_SiteName, temp._Parser_County, temp._Parser_PublishAgency, temp._Parser_PublishTime);
                 Console.WriteLine("{0,-12}{1}\t{2}\n", temp._Parser_UVI, temp._Parser_WGS84Lat, temp._Parser_WGS84Lon);
             });
+        }
+
+        public static void DataBase_Connect(Data_Parser insert)
+        {
+            const string _connect_str = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Analyze_DataBase;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+            SqlConnection connection = new SqlConnection(_connect_str);
+            connection.Open();
+
+            SqlCommand command = new SqlCommand("", connection);
+            command.CommandText = string.Format(@"INSERT INTO ParserResult(SiteName, UVI, PublishAgency, County, WGS84Lon, WGS84Lat, PublishTime)
+                 VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')");
+
+            command.ExecuteNonQuery();
+            connection.Close();
         }
     }
 }
