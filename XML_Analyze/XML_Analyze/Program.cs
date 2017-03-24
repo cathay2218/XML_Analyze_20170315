@@ -1,5 +1,7 @@
 ﻿using System;
-using System.Xml;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace XML_Analyze
 {
@@ -7,39 +9,64 @@ namespace XML_Analyze
     {
         static void Main(string[] args)
         {
-            XmlDocument doc = new XmlDocument();
+            //20170315 直接使用字串處理法輸出
+            //DirectOutput.Direct_Console_Output();
+
+            //20170324 類別輸出
+            Output_Data(Parser());
+
+            Console.Write(@"請按Enter鍵繼續...");
+            Console.ReadLine();
+        }
+
+        public static List<Data_Parser> Parser()
+        {
+            //http://data.gov.tw/node/6076  ->  紫外線即時監測資料
+            List<Data_Parser> ParserResult = new List<Data_Parser>();
+
             Console.WriteLine(@"Loading XML File...");
-            doc.Load(@"http://opendata.hccg.gov.tw/dataset/c298f31a-54a9-410d-804c-ef96a2a75130/resource/7db82690-f637-42a5-8408-40d6fcfba868/download/20170223091823530.xml");
+            XElement xml = XElement.Load(@"http://opendata.epa.gov.tw/ws/Data/UV/?format=xml");
 
             Console.WriteLine("Analyze XML File...\n");
-            XmlNode Node = doc.LastChild;
-            XmlNodeList List = Node.ChildNodes;
+            IEnumerable<XElement> StationNode = xml.Descendants("Data");
 
-            Console.WriteLine(@"新竹市公共圖書館圖書借閱量統計");
-            Console.WriteLine("==============================================================");
-            Console.WriteLine("統計年月  館藏地");
-            Console.WriteLine("借閱人次  借閱冊數  還書人次  還書冊數  預約人次  預約冊數");
-            Console.WriteLine("==============================================================");
-
-            for (int i = 0; i < List.Count; i++)
+            StationNode.ToList().ForEach(stationNode =>
             {
-                XmlNodeList analyze = List[i].ChildNodes;
-                Console.Write("{0,-10}", analyze[0].LastChild.InnerText);
-                Console.Write("{0,-16}", analyze[1].LastChild.InnerText);
-                Console.WriteLine();
-                Console.Write("{0,-10}", analyze[2].LastChild.InnerText);
-                Console.Write("{0,-10}", analyze[3].LastChild.InnerText);
-                Console.Write("{0,-10}", analyze[6].LastChild.InnerText);
-                Console.Write("{0,-10}", analyze[7].LastChild.InnerText);
-                Console.Write("{0,-10}", analyze[8].LastChild.InnerText);
-                Console.Write("{0,-10}", analyze[9].LastChild.InnerText);
+                string StationIdentifier = stationNode.Element("SiteName").Value.Trim();
+                string UV_Value = stationNode.Element("UVI").Value.Trim();
+                string PublishAgency = stationNode.Element("PublishAgency").Value.Trim();
+                string County = stationNode.Element("County").Value.Trim();
+                string WGS84Lon = stationNode.Element("WGS84Lon").Value.Trim();
+                string WGS84Lat = stationNode.Element("WGS84Lat").Value.Trim();
+                string RecordTime = stationNode.Element("PublishTime").Value.Trim();
 
-                Console.WriteLine();
-                Console.WriteLine();
-            }
+                Data_Parser parser_repository = new Data_Parser();
+                parser_repository._Parser_SiteName = StationIdentifier;
+                parser_repository._Parser_UVI = UV_Value;
+                parser_repository._Parser_PublishAgency = PublishAgency;
+                parser_repository._Parser_County = County;
+                parser_repository._Parser_WGS84Lon = WGS84Lon;
+                parser_repository._Parser_WGS84Lat = WGS84Lat;
+                parser_repository._Parser_PublishTime = RecordTime;
 
-            Console.Write(@"請按任意鍵繼續...");
-            Console.Read();
+                ParserResult.Add(parser_repository);
+            });
+            
+            return ParserResult;
+        }
+
+        public static void Output_Data(List<Data_Parser> input)
+        {
+            Console.WriteLine(@"已解析{0}筆資料", input.Count);
+            Console.WriteLine(@"站點名稱  所在縣市  資料發布單位  資料發布日期");
+            Console.WriteLine(@"紫外線數值  站點緯度(Lat)  站點經度(Lon)");
+            Console.WriteLine(@"==================================================");
+
+            input.ForEach(temp =>
+            {
+                Console.WriteLine("{0,-5}{1,-5}{2,-7}{3}", temp._Parser_SiteName, temp._Parser_County, temp._Parser_PublishAgency, temp._Parser_PublishTime);
+                Console.WriteLine("{0,-12}{1}\t{2}\n", temp._Parser_UVI, temp._Parser_WGS84Lat, temp._Parser_WGS84Lon);
+            });
         }
     }
 }
