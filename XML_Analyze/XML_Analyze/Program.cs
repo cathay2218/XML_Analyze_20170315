@@ -24,7 +24,7 @@ namespace XML_Analyze
         {
             //http://data.gov.tw/node/6076  ->  紫外線即時監測資料
             List<Data_Parser> ParserResult = new List<Data_Parser>();
-
+            
             Console.WriteLine(@"Loading XML File...");
             XElement xml = XElement.Load(@"http://opendata.epa.gov.tw/ws/Data/UV/?format=xml");
 
@@ -51,6 +51,7 @@ namespace XML_Analyze
                 parser_repository._Parser_PublishTime = RecordTime;
 
                 ParserResult.Add(parser_repository);
+                //DataBase_Connect(parser_repository);
             });
             
             return ParserResult;
@@ -70,19 +71,20 @@ namespace XML_Analyze
             });
         }
 
-        public static void DataBase_Connect(Data_Parser insert)
-        {
-            const string _connect_str = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Analyze_DataBase;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        //public static void DataBase_Connect(Data_Parser insert)
+        //{
+        //    const string _connect_str = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Analyze_DataBase;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
-            SqlConnection connection = new SqlConnection(_connect_str);
-            connection.Open();
+        //    SqlConnection connection = new SqlConnection(_connect_str);
+        //    connection.Open();
 
-            SqlCommand command = new SqlCommand("", connection);
-            command.CommandText = string.Format(@"INSERT INTO ParserResult(SiteName, UVI, PublishAgency, County, WGS84Lon, WGS84Lat, PublishTime)
-                 VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')");
+        //    SqlCommand command = new SqlCommand("", connection);
+        //    command.CommandText = string.Format(@"INSERT INTO ParserResult(SiteName, UVI, PublishAgency, County, WGS84Lon, WGS84Lat, PublishTime)
+        //         VALUE ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')",
+        //         insert._Parser_SiteName,insert._Parser_UVI,insert._Parser_PublishAgency,insert._Parser_County,insert._Parser_WGS84Lon,insert._Parser_WGS84Lat,insert._Parser_PublishTime);
 
-            command.ExecuteNonQuery();
-            connection.Close();
-        }
+        //    command.ExecuteNonQuery();
+        //    connection.Close();
+        //}
     }
 }
